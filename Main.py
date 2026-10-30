@@ -40,6 +40,16 @@ while running:
         screen.blit(block_resize, (700+i*100,400))
         i=i+1
 
+    ennemi1_resize=pygame.transform.scale(Objets.Images.ennnemi1, (100, 100))
+    ennemi1=emi.Ennemi(emi.position,ennemi1_resize,"ennemi_n°1",1)
+    screen.blit(ennemi1.image,(1400,744))
+    ennemi2_resize = pygame.transform.scale(Objets.Images.ennnemi2, (100, 100))
+    ennemi2 = emi.Ennemi(emi.position, ennemi2_resize, "ennemi_n°2", 1)
+    screen.blit(ennemi2.image, (1400, 200))
+    ennemi3_resize = pygame.transform.scale(Objets.Images.ennnemi3, (100, 100))
+    ennemi3 = emi.Ennemi(emi.position, ennemi3_resize, "ennemi_n°3", 1)
+    screen.blit(ennemi3.image, (1400, 472))
+
 
     #AFFICHER UN RECTANGLE
     clc = pygame.draw.rect(surface, (0, 0, 255), pygame.Rect(0, 0, 100, 100))
