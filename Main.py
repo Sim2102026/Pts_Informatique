@@ -1,10 +1,9 @@
-#Ne pas oublier la commande pip
 import pygame
 import os
-import sys
-sys.path.insert(1, '/Pts_Informatique/Objets/')
 import Objets.Images
 import Objets.Player
+import Objets.Ennemi as emi
+import Objets.plateforme as pform
 
 pygame.init()
 pygame.display.init()
@@ -26,7 +25,21 @@ while running:
     Im_player = Objets.Images.player_im
     Im_player_resize = pygame.transform.scale(Im_player, (100, 100))
     Objets.Player.player = Objets.Player.Player(Objets.Player.position_player,Im_player_resize, "Jean", 3, 0)
-    screen.blit(Im_player_resize,(500,744))
+    screen.blit(Im_player_resize,(50,744))
+
+    #AFFICHER blocks avec la boucle FOR
+    block = Objets.Images.block
+    block_resize = pygame.transform.scale(block, (100, 100))
+    block = pform.Plateforme(pform.position, block_resize, "block", )
+    #8 blocks
+    for i in range(1,9):
+        screen.blit(block_resize, (300+i*100,600))
+        i=i+1
+    #3 blocks
+    for i in range(1,4):
+        screen.blit(block_resize, (700+i*100,400))
+        i=i+1
+
 
     #AFFICHER UN RECTANGLE
     clc = pygame.draw.rect(surface, (0, 0, 255), pygame.Rect(0, 0, 100, 100))
