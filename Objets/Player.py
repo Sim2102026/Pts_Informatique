@@ -7,4 +7,4 @@ class Player:
         self.life=life
         self.compteur_piece=compteur_piece
 
-position_player=[()]
+position_player=[50, 744]
