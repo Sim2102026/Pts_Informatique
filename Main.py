@@ -4,7 +4,7 @@ import Objets.Images
 import Objets.Player
 import Objets.Ennemi as emi
 import Objets.plateforme as pform
-
+import time
 pygame.init()
 pygame.display.init()
 ground=pygame.image.load(os.path.join('Assets', 'Background_test+base.png'))
@@ -55,20 +55,22 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        #déplace joueur à droite
-        if keys[pygame.K_RIGHT]:
-            print("right arrow")
-            dx=100
-            x=x+dx
-            fps = clock.get_fps()
-            print(f"FPS: {fps:.2f}")
-        # déplace joueur à gauche
-        if keys[pygame.K_LEFT]:
-            print("left arrow")
-            dx=-100
-            x=x+dx
-            fps = clock.get_fps()
-            print(f"FPS: {fps:.2f}")
+    # déplace joueur à droite
+    if keys[pygame.K_RIGHT]:
+        print("right arrow")
+        dx = (time.clock_gettime(keys[pygame.K_RIGHT]) / 1000)
+        print(time.clock_gettime(keys[pygame.K_RIGHT]))
+        x = x + dx
+        fps = clock.get_fps()
+        print(f"FPS: {fps:.2f}")
+    # déplace joueur à gauche
+    if keys[pygame.K_LEFT]:
+        print("right arrow")
+        dx = -(time.clock_gettime(keys[pygame.K_LEFT]) / 1000)
+        print(time.clock_gettime(keys[pygame.K_LEFT]))
+        x = x + dx
+        fps = clock.get_fps()
+        print(f"FPS: {fps:.2f}")
     pygame.display.flip()
     pygame.display.update()
 
