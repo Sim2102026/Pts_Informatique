@@ -1,17 +1,17 @@
-"""Petit exemple pour tester Environnement avec un joueur provisoire."""
+"""Tester Environnement + joueur provisoire"""
 
 import pygame
 from Environnement import DOSSIER_ASSETS, Environnement, LARGEUR, HAUTEUR
 
 
 class JoueurDemo:
-    """A remplacer par la classe Joueur de l'equipe lors de l'integration."""
+    """A remplacer par la classe Joueur de l'equipe lors de l'integration"""
 
     def __init__(self, environnement):
         self.images = {}
         for etat in ["idle", "jump", "walk_a", "walk_b"]:
             image = pygame.image.load(str(DOSSIER_ASSETS / ("character_green_" + etat + ".png"))).convert_alpha()
-            # Enlever les marges transparentes pour que les pieds touchent le sol.
+            # Enlever les marges transparentes pour que les pieds touchent le sol
             image = image.subsurface(image.get_bounding_rect())
             self.images[etat] = pygame.transform.smoothscale(image, (52, 62))
         self.rect = self.images["idle"].get_rect()
