@@ -23,8 +23,6 @@ run = True
 while run:
     rect1 = pygame.Rect(10, 10, 10, 10)
     rect2 = pygame.Rect(10, 10000 ,10, 10)
-    if rect1.colliderect(rect2):
-        print("og")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
@@ -36,6 +34,7 @@ while run:
     all_group.draw(window)
     for s in collide:
         pygame.draw.rect(window, (255, 255, 255), s.rect, 5, 1)
+        print("og")
     pygame.display.flip()
 
 pygame.quit()

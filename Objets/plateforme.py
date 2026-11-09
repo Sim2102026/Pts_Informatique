@@ -5,8 +5,7 @@ class Plateforme(pygame.sprite.Sprite):
         self.position=position
         self.image=image
         self.name=name
-        pygame.sprite.collide_rect(image,image)
-        if pygame.sprite.collide_rect(image,image)==True:
-            print("ok")
+
+
 
 position=[(300,200)]

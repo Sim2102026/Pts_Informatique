@@ -1,5 +1,9 @@
 import pygame
 import os
+
+from pygame.sprite import spritecollide
+from pygame.surfarray import pixels_alpha
+
 import Objets.Images
 import Objets.Player
 import Objets.Ennemi as emi
@@ -12,6 +16,15 @@ flags=pygame.SCALED|pygame.RESIZABLE
 screen = pygame.display.set_mode((1600, 900),flags,depth=0, display=0, vsync=1)
 clock = pygame.time.Clock()
 running = True
+
+
+
+
+# Collision
+player_rect = pygame.Rect(200, 500, 50, 50)
+player_rect2 = pygame.Rect(200, 0, 50, 50)
+
+
 
 surface = pygame.display.set_mode((0,0))
 # print(Objets.Images.player_im)
@@ -51,6 +64,21 @@ while running:
     screen.blit(ennemi1.image, (1400, 744))
     screen.blit(ennemi2.image, (1400, 200))
     screen.blit(ennemi3.image, (1400, 472))
+
+
+    #block pour collision
+    col=screen.blit(block_resize, (400, 744))
+    collide = pygame.Rect.colliderect(player_rect, player_rect2)
+    if collide:
+        player_rect2.bottom = player_rect.top
+        # Drawing player rect
+        pygame.draw.rect(surface, (0, 255, 0),
+                         player_rect)
+        # Drawing player rect2
+        pygame.draw.rect(surface, (0, 0, 255),
+                         player_rect2)
+
+
     keys=pygame.key.get_pressed()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -58,7 +86,7 @@ while running:
     # déplace joueur à droite
     if keys[pygame.K_RIGHT]:
         print("right arrow")
-        dx = (time.clock_gettime(keys[pygame.K_RIGHT]) / 1000)
+        dx = 40
         print(time.clock_gettime(keys[pygame.K_RIGHT]))
         x = x + dx
         fps = clock.get_fps()
@@ -66,7 +94,7 @@ while running:
     # déplace joueur à gauche
     if keys[pygame.K_LEFT]:
         print("right arrow")
-        dx = -(time.clock_gettime(keys[pygame.K_LEFT]) / 1000)
+        dx = -40
         print(time.clock_gettime(keys[pygame.K_LEFT]))
         x = x + dx
         fps = clock.get_fps()
