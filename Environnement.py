@@ -1,4 +1,4 @@
-"""Decor, carte et collisions des plateformes du jeu."""
+"""Decor et carte et collisions des plateformes"""
 
 from pathlib import Path
 import pygame
@@ -7,7 +7,7 @@ LARGEUR, HAUTEUR = 1024, 640
 TAILLE_BLOC = 64
 DOSSIER_ASSETS = Path(__file__).resolve().parent / "Assets" / "Kenney"
 
-# Un caractere = une case de 64 pixels. Modifier cette liste pour changer le decor.
+# Un caractere = une case de 64 pixels. Modifier cette liste pour changer le decor
 # . : vide     # : terre     = : plateforme suspendue
 CARTE = [
     "................",
@@ -69,11 +69,11 @@ class Environnement:
             self.decorations.append((charger_image(nom, (64, 64)), position))
 
     def est_au_sol(self, rect):
-        # Le petit decalage permet de tester le contact avec le sol.
+        # Le petit decalage permet de tester le contact avec le sol
         return rect.move(0, 1).collidelist(self.plateformes) != -1
 
     def deplacer(self, rect, dx, dy):
-        """Modifie rect : d'abord X, puis Y. Renvoie (au_sol, choc_vertical)."""
+        """Modifie rect : d'abord X, puis Y. Renvoie (au_sol, choc_vertical)"""
         rect.x += round(dx)
         for plateforme in self.plateformes:
             if rect.colliderect(plateforme):
