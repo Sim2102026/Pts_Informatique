@@ -1,8 +1,7 @@
 import pygame
 import os
+import unittest
 
-from pygame.sprite import spritecollide
-from pygame.surfarray import pixels_alpha
 
 import Objets.Images
 import Objets.Player
