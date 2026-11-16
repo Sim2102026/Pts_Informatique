@@ -14,9 +14,22 @@ class Ennemi:
 
         self.rect = pygame.Rect(self.x,self.y,self.width,self.height)
 
+    def update(self):
+        self.position[0] = self.x
+        self.position[1] = self.y
+
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def draw(self, screen):
+        screen.blit(self.image,(self.x, self.y))
+
+    def damage(self, amount=1):
+        self.life -= amount
+
+        if self.life < 0:
+            self.life = 0
+
 
 class Boss(Ennemi):
     pass
-
-position=[(450,0)]
-#ennemi1=Ennemi(position,Images.ennnemi1,"ennemi_n°1",1)
