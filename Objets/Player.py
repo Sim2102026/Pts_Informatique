@@ -27,6 +27,8 @@ class Player:
         self.is_falling = False
         self.is_alive = True
     #Réorganiser méthodes
+    def update(self):
+        pass
     def move_right(self):
         print("right arrow")
         dx = 10
