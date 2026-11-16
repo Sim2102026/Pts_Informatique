@@ -49,9 +49,10 @@ def test_position_de_depart_du_joueur():
 
 
 def test_la_vraie_carte_est_rectangulaire():
-    # Toutes les lignes doivent avoir la même longueur (20 cases = 960 px)
+    # Toutes les lignes ont la largeur du monde, independante de la fenetre.
     for ligne in CARTE:
-        assert len(ligne) * config.TAILLE_TUILE == config.LARGEUR
+        assert len(ligne) == len(CARTE[0])
+    assert len(CARTE[0]) * config.TAILLE_TUILE > config.LARGEUR
 
 
 def test_la_vraie_carte_a_un_depart_et_une_arrivee():
