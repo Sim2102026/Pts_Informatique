@@ -13,39 +13,34 @@ from plateforme import Plateforme
 from ennemi import Ennemi
 from piece import Piece
 from arrivee import Arrivee
+from soin import Soin
 
-# 20 colonnes x 13 lignes = un écran de 960 x 624 pixels
-CARTE = [
-    "....................",
-    "....................",
-    "..............F..D..",
-    ".............XXXXXX.",
-    "....................",
-    ".......F.E.F........",
-    ".......XXXXX........",
-    "....................",
-    "....F.F........E.F..",
-    "...XXXX......XXXXX..",
-    "....................",
-    ".P......F....E......",
-    "XXXXXXXXX..XXXXXXXXX",
-]
+from carte_longue import CARTE_LONGUE
+
+CARTE = CARTE_LONGUE
 
 
 class Niveau:
     # Niveau n'hérite de rien : il CONTIENT des groupes de sprites (composition).
 
     def __init__(self, carte=CARTE):
+        if not carte or not carte[0] or len({len(ligne) for ligne in carte}) != 1:
+            raise ValueError("La carte doit etre rectangulaire et non vide")
+        self.largeur = len(carte[0]) * config.TAILLE_TUILE
+        self.hauteur = len(carte) * config.TAILLE_TUILE
         terrain = charger_image("Terrain", "Terrain (16x16).png")
         self.image_bloc = terrain.subsurface(pygame.Rect(96, 0, 48, 48))
 
         self.plateformes = pygame.sprite.Group()
         self.ennemis = pygame.sprite.Group()
         self.pieces = pygame.sprite.Group()
+        self.soins = pygame.sprite.Group()
         self.arrivee = pygame.sprite.Group()
         self.position_depart = (0, 0)
 
         self.construire(carte)
+        for ennemi in self.ennemis:
+            ennemi.largeur_monde = self.largeur
 
     def construire(self, carte):
         t = config.TAILLE_TUILE
@@ -69,12 +64,15 @@ class Niveau:
                     piece = Piece(x, y)
                     piece.rect.center = (x + t // 2, y + t // 2)   # centré dans la case
                     self.pieces.add(piece)
+                elif case == "H":
+                    self.soins.add(Soin(x + t // 2, y + t // 2))
                 elif case == "D":
                     self.arrivee.add(Arrivee(x, bas_de_case - 64))
 
-    def dessiner(self, ecran):
+    def dessiner(self, ecran, camera=None):
         """Dessine tout le décor, du fond vers l'avant."""
-        self.plateformes.draw(ecran)
-        self.arrivee.draw(ecran)
-        self.pieces.draw(ecran)
-        self.ennemis.draw(ecran)
+        for groupe in (self.plateformes, self.arrivee, self.pieces, self.ennemis, self.soins):
+            if camera is None:
+                groupe.draw(ecran)
+            else:
+                camera.dessiner_groupe(ecran, groupe)

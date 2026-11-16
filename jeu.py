@@ -13,6 +13,7 @@ import config
 from outils import charger_image
 from joueur import Joueur
 from niveau import Niveau
+from camera import Camera
 from menu import MenuAccueil, MenuFin
 from affichage_sante import AffichageSante
 
@@ -39,6 +40,9 @@ class Jeu:
         self.niveau = Niveau()
         x, y = self.niveau.position_depart
         self.joueur = Joueur(x, y)
+        self.joueur.largeur_monde = self.niveau.largeur
+        self.camera = Camera(config.LARGEUR, self.niveau.largeur)
+        self.camera.update(self.joueur)
 
     def finir_partie(self, gagne):
         self.etat = "fin"
@@ -78,6 +82,9 @@ class Jeu:
             else:
                 self.joueur.prendre_un_coup()
 
+        for soin in pygame.sprite.spritecollide(self.joueur, self.niveau.soins, False):
+            soin.ramasser(self.joueur)
+
     def mettre_a_jour(self):
         if self.etat != "jeu":
             return               # dans un menu, le jeu est "en pause"
@@ -86,11 +93,14 @@ class Jeu:
         self.joueur.update(self.niveau.plateformes)
         self.niveau.ennemis.update(self.niveau.plateformes)
         self.niveau.pieces.update()
+        self.niveau.soins.update(self.horloge.get_time() / 1000)
         self.verifier_collisions()
 
         # Tombé dans un trou ? (le haut du joueur est sous le bas de l'écran)
         if self.joueur.rect.top > config.HAUTEUR:
             self.joueur.reapparaitre(*self.niveau.position_depart)
+
+        self.camera.update(self.joueur)
 
         if self.joueur.est_mort():
             self.finir_partie(gagne=False)
@@ -106,14 +116,15 @@ class Jeu:
 
     def dessiner(self):
         taille = self.tuile_fond.get_width()
-        for x in range(0, config.LARGEUR, taille):
+        depart_x = -int(self.camera.offset_x * 0.25) % taille - taille
+        for x in range(depart_x, config.LARGEUR, taille):
             for y in range(0, config.HAUTEUR, taille):
                 self.ecran.blit(self.tuile_fond, (x, y))
 
-        self.niveau.dessiner(self.ecran)
+        self.niveau.dessiner(self.ecran, self.camera)
         # Clignotement pendant l'invincibilité : visible 5 frames, caché 5 frames...
         if self.joueur.invincible == 0 or (self.joueur.invincible // 5) % 2 == 0:
-            self.ecran.blit(self.joueur.image, self.joueur.rect)
+            self.ecran.blit(self.joueur.image, self.camera.appliquer(self.joueur.rect))
 
         if self.etat == "jeu":
             self.dessiner_infos()

@@ -33,6 +33,7 @@ class Joueur(Entite):   # <-- (Entite) entre parenthèses = "Joueur hérite d'En
             animations = charger_animations_personnage("Ninja Frog")
         # On laisse la classe mère faire tout le travail commun :
         super().__init__(x, y, animations)
+        self.largeur_monde = config.LARGEUR
         self.vies = config.VIES_DEPART
         self.score = 0
         self.invincible = 0     # compte à rebours (en frames) après un coup
@@ -79,6 +80,12 @@ class Joueur(Entite):   # <-- (Entite) entre parenthèses = "Joueur hérite d'En
         self.vitesse_x = 0
         self.vitesse_y = 0
 
+    def soigner(self):
+        if self.vies <= 0 or self.vies >= config.VIES_DEPART:
+            return False
+        self.vies += 1
+        return True
+
     def est_mort(self):
         return self.vies <= 0
 
@@ -101,8 +108,8 @@ class Joueur(Entite):   # <-- (Entite) entre parenthèses = "Joueur hérite d'En
         super().update(plateformes)
         if self.invincible > 0:
             self.invincible -= 1
-        # ...et on ajoute une règle propre au joueur : ne pas sortir de l'écran.
+        # ...et on ajoute une règle propre au joueur : ne pas sortir de la carte.
         if self.rect.left < 0:
             self.rect.left = 0
-        if self.rect.right > config.LARGEUR:
-            self.rect.right = config.LARGEUR
+        if self.rect.right > self.largeur_monde:
+            self.rect.right = self.largeur_monde

@@ -13,6 +13,7 @@ class Ennemi(Entite):
             # L'asset n'a pas de vrais ennemis : on prend un autre personnage.
             animations = charger_animations_personnage("Mask Dude")
         super().__init__(x, y, animations)
+        self.largeur_monde = config.LARGEUR
         self.vitesse_x = config.VITESSE_ENNEMI   # il part vers la droite
 
     def faire_demi_tour(self):
@@ -43,5 +44,9 @@ class Ennemi(Entite):
         # Règles en plus, propres à l'ennemi :
         if self.au_sol and self.vide_devant(plateformes):
             self.faire_demi_tour()    # ne pas tomber de sa plateforme
-        if self.rect.left < 0 or self.rect.right > config.LARGEUR:
-            self.faire_demi_tour()    # ne pas sortir de l'écran
+        if self.rect.left < 0:
+            self.rect.left = 0
+            self.vitesse_x = abs(self.vitesse_x)
+        elif self.rect.right > self.largeur_monde:
+            self.rect.right = self.largeur_monde
+            self.vitesse_x = -abs(self.vitesse_x)    # ne pas sortir de l'écran
