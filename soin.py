@@ -19,7 +19,7 @@ class Soin(pygame.sprite.Sprite):
     def update(self, dt=0):
         """dt : secondes de jeu écoulées ; pas d'avancée pendant les menus."""
         self.temps += dt
-        self.rect.centery = round(self.centre_y + 4 * math.sin(self.temps * 3))
+        self.rect.centery = round(self.centre_y + 6 * math.sin(self.temps * 3))
 
     def ramasser(self, joueur):
         """Ne disparaît que si le joueur a effectivement récupéré une vie."""
