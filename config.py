@@ -17,7 +17,7 @@ ECHELLE = 2            # on agrandit tout x2, sinon c'est minuscule à l'écran
 
 # Dossier où se trouve l'asset (le dossier "assets" à côté de ce fichier).
 # os.path.dirname(__file__) = le dossier qui contient config.py.
-DOSSIER_ASSETS = os.path.join(os.path.dirname(__file__), "assets")
+DOSSIER_ASSETS = os.path.join(os.path.dirname(__file__), "Assets", "PixelAdventure")
 
 # --- Décor ---
 TAILLE_TUILE = 48      # un bloc de terrain fait 48x48 pixels
