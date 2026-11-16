@@ -14,6 +14,7 @@ from outils import charger_image
 from joueur import Joueur
 from niveau import Niveau
 from menu import MenuAccueil, MenuFin
+from affichage_sante import AffichageSante
 
 
 class Jeu:
@@ -26,6 +27,8 @@ class Jeu:
 
         self.tuile_fond = charger_image("Background", "Blue.png")
         self.police = pygame.font.Font(None, 36)
+        # Les coeurs en haut à droite (classe écrite par Zitong)
+        self.affichage_sante = AffichageSante(maximum=config.VIES_DEPART, taille=48)
 
         self.nouvelle_partie()       # le niveau est visible derrière le menu
         self.etat = "accueil"
@@ -96,9 +99,10 @@ class Jeu:
 
     # ------------------------------------------------------------------
     def dessiner_infos(self):
-        texte = f"Score : {self.joueur.score}    Vies : {self.joueur.vies}"
+        texte = f"Score : {self.joueur.score}"
         image = self.police.render(texte, True, (40, 40, 60))
         self.ecran.blit(image, (15, 12))
+        self.affichage_sante.dessiner(self.ecran, self.joueur, y=10)
 
     def dessiner(self):
         taille = self.tuile_fond.get_width()
