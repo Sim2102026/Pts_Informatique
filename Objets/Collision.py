@@ -1,41 +1,63 @@
-# Source - https://stackoverflow.com/a/65064907
-# Posted by Rabbid76, modified by community. See post 'Timeline' for change history
-# Retrieved 2026-10-30, License - CC BY-SA 4.0
-
 import pygame
+import unittest
 
-pygame.init()
-window = pygame.display.set_mode((250, 250))
+class Collision:
+    def __init__(self):
+        self.show_hitbox = False
 
-sprite1 = pygame.sprite.Sprite()
-sprite1.image = pygame.Surface((75, 75))
-sprite1.image.fill((255, 0, 0))
-sprite1.rect = pygame.Rect(*window.get_rect().center, 0, 0).inflate(75, 75)
-sprite2 = pygame.sprite.Sprite()
-sprite2.image = pygame.Surface((75, 75))
-sprite2.image.fill((0, 255, 0))
-sprite2.rect = pygame.Rect(*window.get_rect().center, 0, 0).inflate(75, 75)
+    def toggle_hitbox(self):
+        self.show_hitbox = not self.show_hitbox
 
-all_group = pygame.sprite.Group([sprite2, sprite1])
-test_group = pygame.sprite.Group(sprite2)
+    def check(self, object1, object2):
+        return object1.rect.colliderect(object2.rect)
+#Le carré collision du joueur qui suit le déplacement du joueur
+    def move_player(self, player, platforms):
+        player.rect.x = player.x
 
-run = True
-while run:
-    rect1 = pygame.Rect(10, 10, 10, 10)
-    rect2 = pygame.Rect(10, 10000 ,10, 10)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+        for platform in platforms:
 
-    sprite1.rect.center = pygame.mouse.get_pos()
-    collide = pygame.sprite.spritecollide(sprite1, test_group, False)
+            if player.rect.colliderect(platform.rect):
 
-    window.fill(0)
-    all_group.draw(window)
-    for s in collide:
-        pygame.draw.rect(window, (255, 255, 255), s.rect, 5, 1)
-        print("og")
-    pygame.display.flip()
+                if player.vitesse_x > 0:
+                    player.rect.right = platform.rect.left
 
-pygame.quit()
-exit()
+                elif player.vitesse_x < 0:
+                    player.rect.left = platform.rect.right
+
+                player.x = player.rect.x
+
+        player.rect.y = player.y
+
+        player.is_falling = True
+
+        for platform in platforms:
+
+            if player.rect.colliderect(platform.rect):
+
+                if player.vitesse_y > 0:
+                    player.rect.bottom = platform.rect.top
+                    player.y = player.rect.y
+                    player.vitesse_y = 0
+                    player.is_jumping = False
+                    player.is_falling = False
+
+                elif player.vitesse_y < 0:
+                    player.rect.top = platform.rect.bottom
+                    player.y = player.rect.y
+                    player.vitesse_y = 0
+
+        player.update()
+
+    def draw_hitbox(self, screen, obj):
+        if self.show_hitbox:
+            #hitbox rouge
+            pygame.draw.rect(screen,(255, 0, 0),obj.rect,2)
+
+    def draw_all_hitboxes(self, screen, objects):
+        if self.show_hitbox:
+
+            for obj in objects:
+                self.draw_hitbox(screen, obj)
+
+if __name__ == '__main__':
+    pass
