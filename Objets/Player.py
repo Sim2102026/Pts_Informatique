@@ -28,23 +28,35 @@ class Player:
         self.is_alive = True
     #Réorganiser méthodes
     def update(self):
-        pass
+        self.rect.topleft = (self.x, self.y)
+        self.position[0] = self.x
+        self.position[1] = self.y
     def move_right(self):
         print("right arrow")
         dx = 10
-        x=Player.position[0]
-        x=dx+x
-        print(x)
-        return x
+        self.x += self.speed
+        self.update()
+        print(self.x)
+
 
     def move_up(self):
-        print("bruh")
-        time.sleep(2)
-        d=-100
-
+        if not self.is_jumping and not self.is_falling:
+            self.vitesse_y = -self.jump_force
+            self.is_jumping = True
 
     def move_left(self):
-        pass
+        self.x -= self.speed
+        self.update()
+
+    def stop_horizontal(self):
+        self.vitesse_x = 0
+
+    def jump(self):
+        self.move_up()
+
+# dessiner player dans la classe au lieu de main
+    def draw(self, screen):
+        screen.blit(self.image,self.rect)
 
     def collect_piece(self):
         pass
@@ -52,5 +64,32 @@ class Player:
     def damage(self):
         pass
     def physics(self):
-        pass
-play_tets=Player(position_player, player_im, "Jean", 3, 0)
+        self.vitesse_y += self.gravity
+        self.y += self.vitesse_y
+
+        if self.vitesse_y > 0:
+            self.is_falling = True
+
+        self.update()
+
+    def reset(self):
+        self.x = 50
+        self.y = 620
+
+        self.vitesse_x = 0
+        self.vitesse_y = 0
+
+        self.is_jumping = False
+        self.is_falling = False
+
+        self.life = 3
+        self.compteur_piece = 0
+        self.is_alive = True
+
+        self.update()
+
+def create_player(name="Jean",x=50,y=620,life=3,compteur_piece=0):
+    image = pygame.transform.scale(player_im,(50, 50))
+
+    return Player([x, y],image,name,life,compteur_piece)
+player = create_player()
