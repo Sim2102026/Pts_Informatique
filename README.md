@@ -88,9 +88,19 @@ Lorsque l'utilisateur lance le programme main.py, il fait appel au fichier `jeu.
 3. Le menu de fin indique la victoire.
 4. Le score final est affiché.
 
-**Attendu :** le parcours de jeu peut se terminer normalement.
+**Attendu :** le parcours se termine normalement.
 
-### Étape 9 — Choix d'un emplacement, sauvegarde automatique et reprise
+### Étape 9 — Le Boss
+1. A la fin du niveau, une porte
+2. Entrer en appuyant par la flèche du haut
+3. Fondu noir
+4. Salle du boss
+5. Le boss a des points de vies et se déplace
+6. Le joueur peut sauter sur le boss
+7. Le boss perd de la vie jusqu'à 0
+8. Fin du jeu quand le boss vaincu
+
+### Étape 10 — Choix d'un emplacement, sauvegarde automatique et reprise
 1. Depuis le menu principal, choisir « Jouer » ou « Sauvegardes ».
 2. Le sélecteur affiche les cinq emplacements (1 à 5), avec le niveau et le score pour les slots occupés.
 3. Choisir un slot vide pour démarrer une nouvelle partie, ou un slot occupé pour reprendre cette partie.
@@ -99,7 +109,7 @@ Lorsque l'utilisateur lance le programme main.py, il fait appel au fichier `jeu.
 
 **Attendu :** les cinq emplacements sont indépendants. Le chargement d'un slot restaure la position, les vies et le score ; l'écriture dans un slot ne modifie pas les quatre autres.
 
-### Étape 10 — Défaite et rejouer
+### Étape 11— Défaite et rejouer
 1. Amener les vies à zéro.
 2. Le jeu passe à l'écran de défaite.
 3. Choisir « Rejouer ».
