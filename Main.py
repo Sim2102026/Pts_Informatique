@@ -94,7 +94,8 @@ while running:
         screen.blit(platform.image,camera.apply(platform.rect))
 
     for ennemi in [ennemi1, ennemi2, ennemi3]:
-        screen.blit(ennemi.image,camera.apply(ennemi.rect))
+        ennemi.patrouiller(platforms)
+        ennemi.draw(screen, camera)
 
     screen.blit(player.image,camera.apply(player.rect))
 
