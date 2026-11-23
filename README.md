@@ -1,9 +1,14 @@
 
-**Test d'intégration**:
+# Test d'intégration:
+
+## 1. Objectif
+
+Ce cahier valide, par des tests d'intégration, que les fonctionnalités principales visibles dans le projet s'enchaînent correctement.
 
 L'application est un jeu-vidéo développé sur python avec ses bibliothèques.Il sera une interférence graphique.
 Pour le faire fonctionner, il faudra avoir installer les paquets nécessaires comme pygame,os,unittest,psycopg2....
 Si vous n'avez pas d'IDE, il faudra lancer des commandes dans le bash:
+
 ```bash
   pip install pygame
   pip install psycopg2
@@ -14,7 +19,10 @@ Puis il faudra lancer le jeu dans avec le fichier "main.py" (dans un ide de pré
 L'utilisateur aura la possibilité de contrôler le joueur avec les flèches directionnelles du clavier. La touche «f» permettra à l'utilisateur de voir les hitbox qui sont des carrés en rouge.
 Nous avions dit dans nos spécifications qu'il sera possiible de l'exécuter sur ordinateur. Il sera possible de l'exécuter sur tous les systèmes d'exploitation.
 
-Lorsque l'utilisateur lance le programme main.py, le joueur aura un menu avec des options telles que quitter,jouer,.......
+Lorsque l'utilisateur lance le programme main.py, il fait appel au fichier `jeu.py`. Le fichier `jeu.py` rassemblent l'ensemble des fonctionnalités permisisent par l'utilisateur dont les intéractions se feront par `Niveau.py`, `Joueur.py`, `Camera.py`, les menus et les vies.
+
+> Dans le projet, il y de nombreux tests unitaires effectués par les concepteurs. Toutes les classes en possèdent.
+
 
 ✅ Menu fonctionne
 
