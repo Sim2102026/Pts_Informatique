@@ -107,32 +107,3 @@ Lorsque l'utilisateur lance le programme main.py, il fait appel au fichier `jeu.
 5. Le score revient à 0 et les vies à 3.
 
 **Attendu :** une nouvelle partie est indépendante de la précédente.
-
-
-✅ Menu fonctionne
-
-L'utilisateur pourra contrôler le joueur avec 4 options. Il y a 3 flèches directionnelles. La flèche du haut permet au joueur de sauter. La flèche de droite permet d'aller vers l'avant et la flèche de gauche permet de reculer. La touche «backspace» permet aussi de sauter
-
-✅ Les mouvements du joueur
-
-Les plateformes, les ennemis et le joueur sont des objets. Tous les objets ont des hitbox. Les hitbox sont des objets géométrique pour gérer les collisions.Si le joueur entre collision avec un autre objet, il sera bloqué. Dans le jeu, le joueur est soumis à une gravité qui le fait chuter continuellement mais comme il est sur des plateformes, il ne tombe pas.
-
-✅Gravité, collisions, hitbox
-
-Quand le joueur se déplace, la caméra bouge aussi. 
-
-✅Le joueur peut entrer en collision avec les ennemis
-Il peut collecter des objets. Pour chaque objets il gagne un dix points.
-
-✅Score augmenter de 100 points pour le joueur
-
-✅ Le joueur saute dans le vide → réinitialisation
-
-✅ Eliminier ennemis
-
-✅ Trophée
-
-
-
-
-
