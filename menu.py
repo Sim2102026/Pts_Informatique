@@ -97,7 +97,7 @@ class MenuFin(Menu):
 
     def lignes_infos(self):
         return [f"Score : {self.score}"]
-    
+
 class MenuSauvegardes(Menu):
     """Écran de sélection des cinq emplacements de sauvegarde."""
 

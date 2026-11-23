@@ -14,8 +14,9 @@ from outils import charger_image
 from joueur import Joueur
 from niveau import Niveau
 from camera import Camera
-from menu import MenuAccueil, MenuFin
+from menu import MenuAccueil, MenuFin, MenuSauvegardes
 from affichage_sante import AffichageSante
+import db
 
 
 class Jeu:
@@ -25,6 +26,18 @@ class Jeu:
         pygame.display.set_caption(config.TITRE)
         self.horloge = pygame.time.Clock()
         self.en_cours = True
+        # La sauvegarde est automatique : un checkpoint est écrit de manière périodique.
+        self.intervalle_sauvegarde = 5.0
+        self.temps_depuis_sauvegarde = 0.0
+        self.sauvegarde_disponible = False
+        self.slot_actif = None
+        try:
+            db.initialiser_base()
+            self.sauvegarde_disponible = True
+        except Exception:
+            # Le jeu reste lançable même si PostgreSQL n'est pas configuré.
+            self.sauvegarde_disponible = False
+
 
         self.tuile_fond = charger_image("Background", "Blue.png")
         self.police = pygame.font.Font(None, 36)
@@ -49,20 +62,89 @@ class Jeu:
         self.menu = MenuFin(gagne, self.joueur.score)
 
     def executer_action(self, action):
-        """Fait ce que le joueur a choisi dans un menu."""
-        if action in ("Jouer", "Rejouer"):
+        """Traite une action du menu principal ou de sélection des slots."""
+        if action in ("Jouer", "Sauvegardes"):
+            self.ouvrir_menu_sauvegardes()
+        elif action == "Retour":
+            self.etat = "accueil"
+            self.menu = MenuAccueil()
+        elif isinstance(action, str) and action.startswith("Slot "):
+            try:
+                slot = int(action.split("|", 1)[0].replace("Slot", "").strip())
+            except (ValueError, IndexError):
+                return
+            self.selectionner_sauvegarde(slot)
+        elif action == "Rejouer":
             self.nouvelle_partie()
+            self.temps_depuis_sauvegarde = 0.0
             self.etat = "jeu"
         elif action == "Quitter":
+            self.sauvegarder_automatiquement()
             self.en_cours = False
 
+    def ouvrir_menu_sauvegardes(self):
+        """Affiche les cinq emplacements depuis le menu principal."""
+        emplacements = {slot: None for slot in range(1, 6)}
+        if self.sauvegarde_disponible:
+            try:
+                emplacements = db.lister_sauvegardes()
+            except Exception:
+                self.sauvegarde_disponible = False
+        self.menu = MenuSauvegardes(emplacements)
+        self.etat = "slots"
+
+    def selectionner_sauvegarde(self, slot):
+        """Charge le slot choisi ou démarre une nouvelle partie dans ce slot vide."""
+        if not 1 <= slot <= 5:
+            return False
+        if not self.sauvegarde_disponible:
+            self.slot_actif = slot
+            self.nouvelle_partie()
+            self.etat = "jeu"
+            return True
+        try:
+            sauvegarde = db.charger_sauvegarde(slot)
+        except Exception:
+            return False
+
+        self.slot_actif = slot
+        self.nouvelle_partie()
+        if sauvegarde is not None:
+            self.joueur.rect.topleft = (sauvegarde["x"], sauvegarde["y"])
+            self.joueur.vies = sauvegarde["vies"]
+            self.joueur.score = sauvegarde["score"]
+            self.camera.update(self.joueur)
+
+        self.temps_depuis_sauvegarde = 0.0
+        self.etat = "jeu"
+        return True
+
+    def sauvegarder_automatiquement(self):
+        """Met à jour automatiquement le slot actif, sans toucher aux autres."""
+        if (not self.sauvegarde_disponible or self.etat != "jeu"
+                or self.slot_actif is None):
+            return False
+        try:
+            db.sauvegarder(
+                self.slot_actif,
+                self.joueur,
+                niveau="niveau_1",
+                gagne=False,
+            )
+            self.temps_depuis_sauvegarde = 0.0
+            return True
+        except Exception:
+            self.sauvegarde_disponible = False
+            return False
     # ------------------------------------------------------------------
     def gerer_evenements(self):
         for evenement in pygame.event.get():
             if evenement.type == pygame.QUIT:
+                self.sauvegarder_automatiquement()
                 self.en_cours = False
             elif evenement.type == pygame.KEYDOWN:
                 if evenement.key == pygame.K_ESCAPE:
+                    self.sauvegarder_automatiquement()
                     self.en_cours = False
                 elif self.etat == "jeu":
                     if evenement.key in (pygame.K_SPACE, pygame.K_UP):
@@ -88,6 +170,10 @@ class Jeu:
     def mettre_a_jour(self):
         if self.etat != "jeu":
             return               # dans un menu, le jeu est "en pause"
+
+        self.temps_depuis_sauvegarde += self.horloge.get_time() / 1000
+        if self.temps_depuis_sauvegarde >= self.intervalle_sauvegarde:
+            self.sauvegarder_automatiquement()
 
         self.joueur.lire_clavier(pygame.key.get_pressed())
         self.joueur.update(self.niveau.plateformes)
