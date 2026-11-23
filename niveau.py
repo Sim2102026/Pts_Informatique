@@ -14,6 +14,7 @@ from ennemi import Ennemi
 from piece import Piece
 from arrivee import Arrivee
 from soin import Soin
+from porte import Porte
 
 from carte_longue import CARTE_LONGUE
 
@@ -36,6 +37,7 @@ class Niveau:
         self.pieces = pygame.sprite.Group()
         self.soins = pygame.sprite.Group()
         self.arrivee = pygame.sprite.Group()
+        self.portes = pygame.sprite.Group()
         self.position_depart = (0, 0)
 
         self.construire(carte)
@@ -68,10 +70,12 @@ class Niveau:
                     self.soins.add(Soin(x + t // 2, y + t // 2))
                 elif case == "D":
                     self.arrivee.add(Arrivee(x, bas_de_case - 64))
+                elif case == "T":
+                    self.portes.add(Porte(x + t // 2, bas_de_case))
 
     def dessiner(self, ecran, camera=None):
         """Dessine tout le décor, du fond vers l'avant."""
-        for groupe in (self.plateformes, self.arrivee, self.pieces, self.ennemis, self.soins):
+        for groupe in (self.portes, self.plateformes, self.arrivee, self.pieces, self.ennemis, self.soins):
             if camera is None:
                 groupe.draw(ecran)
             else:

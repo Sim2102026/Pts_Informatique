@@ -80,7 +80,8 @@ class MenuAccueil(Menu):
     def lignes_infos(self):
         return [
             "Flèches : courir     Espace : sauter",
-            "Ramasse les fruits et atteins le trophée !",
+            "Au bout du niveau : Haut pour entrer dans la porte.",
+            "Boss fatigue : saute sur sa tete !",
         ]
 
 
