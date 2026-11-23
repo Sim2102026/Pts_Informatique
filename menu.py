@@ -75,7 +75,7 @@ class Menu:
 class MenuAccueil(Menu):
 
     def __init__(self):
-        super().__init__(config.TITRE, ["Jouer", "Quitter", "Quitter"])
+        super().__init__(config.TITRE, ["Jouer", "Sauvegardes", "Quitter"])
 
     def lignes_infos(self):
         return [
