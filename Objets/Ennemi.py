@@ -134,6 +134,24 @@ class Ennemi:
 
         self.life = max(0, self.life - amount)
 
+    def contact_joueur(self, joueur, bas_precedent):
+        """Rebond sur la tête, retour au départ en cas de contact latéral."""
+        if not self.is_alive:
+            return
+        horizontal = joueur.rect.left < self.rect.right and joueur.rect.right > self.rect.left
+        if horizontal and bas_precedent <= self.rect.top <= joueur.rect.bottom and joueur.rect.bottom > bas_precedent:
+            self.damage()
+            joueur.y = self.rect.top - joueur.rect.height
+            joueur.vitesse_y = -joueur.jump_force
+            joueur.is_jumping = True
+            joueur.is_falling = False
+            joueur.update()
+        elif joueur.rect.colliderect(self.rect):
+            joueur.x, joueur.y = 50, 570
+            joueur.vitesse_x = joueur.vitesse_y = 0
+            joueur.is_jumping = joueur.is_falling = False
+            joueur.update()
+
     def draw(self, screen, camera=None):
         if self.is_alive:
             if camera is not None:
@@ -145,4 +163,21 @@ class Ennemi:
 
 
 class Boss(Ennemi):
-    pass
+    def __init__(self, position, image):
+        super().__init__(position, image, "Rock Head", life=3, speed=2)
+        self.vie_max = self.life
+
+    def damage(self, amount=1):
+        super().damage(amount)
+        if self.life == 1:
+            self.speed = 4
+
+    def draw(self, screen, camera=None):
+        if not self.is_alive:
+            return
+        super().draw(screen, camera)
+        rect = camera.apply(self.rect) if camera is not None else self.rect
+        barre = pygame.Rect(rect.left, rect.top - 10, rect.width, 6)
+        pygame.draw.rect(screen, (65, 30, 30), barre)
+        barre.width = barre.width * self.life // self.vie_max
+        pygame.draw.rect(screen, (235, 75, 65), barre)
