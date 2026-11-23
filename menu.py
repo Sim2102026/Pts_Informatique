@@ -75,7 +75,7 @@ class Menu:
 class MenuAccueil(Menu):
 
     def __init__(self):
-        super().__init__(config.TITRE, ["Jouer", "Quitter"])
+        super().__init__(config.TITRE, ["Jouer", "Quitter", "Quitter"])
 
     def lignes_infos(self):
         return [
@@ -97,3 +97,46 @@ class MenuFin(Menu):
 
     def lignes_infos(self):
         return [f"Score : {self.score}"]
+    
+class MenuSauvegardes(Menu):
+    """Écran de sélection des cinq emplacements de sauvegarde."""
+
+    def __init__(self, emplacements):
+        self.emplacements = emplacements
+        options = []
+        for slot in range(1, 6):
+            donnees = emplacements.get(slot)
+            if donnees:
+                date = donnees.get("updated_at")
+                if hasattr(date, "strftime"):
+                    date_texte = date.strftime("%d/%m %H:%M")
+                elif date:
+                    date_texte = str(date)[:16]
+                else:
+                    date_texte = "date inconnue"
+                options.append(
+                    f"Slot {slot} | {donnees.get('niveau', 'niveau_1')} | "
+                    f"{donnees.get('score', 0)} pts | {date_texte}"
+                )
+            else:
+                options.append(f"Slot {slot}  |  Vide")
+        options.append("Retour")
+        super().__init__("Choisir une sauvegarde", options)
+        self.police = pygame.font.Font(None, 29)
+        self.petite_police = pygame.font.Font(None, 26)
+
+    def lignes_infos(self):
+        return ["Entrée : charger le slot choisi ou commencer une nouvelle partie"]
+
+    def dessiner(self, ecran):
+        voile = pygame.Surface((config.LARGEUR, config.HAUTEUR), pygame.SRCALPHA)
+        voile.fill((0, 0, 0, 205))
+        ecran.blit(voile, (0, 0))
+        self.ecrire_centre(ecran, self.titre, self.police_titre, BLANC, 125)
+        self.ecrire_centre(ecran, self.lignes_infos()[0], self.petite_police, GRIS, 205)
+        y = 285
+        for i, option in enumerate(self.options):
+            couleur = JAUNE if i == self.selection else BLANC
+            texte = f"> {option} <" if i == self.selection else option
+            self.ecrire_centre(ecran, texte, self.police, couleur, y)
+            y += 48
