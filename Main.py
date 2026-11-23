@@ -24,7 +24,6 @@ player = Objets.Player.create_player("Jean",50,570,3,0)
 camera = cam.Camera(WIDTH, HEIGHT)
 SIZE = (50, 50)
 
-surface = pygame.display.set_mode((0,0))
 block_image = pygame.transform.scale(Objets.Images.block,SIZE)
 
 ennemi1_image = pygame.transform.scale(Objets.Images.ennnemi1,SIZE)
@@ -35,9 +34,9 @@ ennemi3_image = pygame.transform.scale(Objets.Images.ennnemi3,SIZE)
 
 ennemi1 = emi.Ennemi([1180, 570],ennemi1_image,"ennemi_n°1",1)
 
-ennemi2 = emi.Ennemi([1180, 180],ennemi2_image,"ennemi_n°2",1)
+ennemi2 = emi.Ennemi([350, 430],ennemi2_image,"ennemi_n°2",1)
 
-ennemi3 = emi.Ennemi([1180, 430],ennemi3_image,"ennemi_n°3",1)
+ennemi3 = emi.Ennemi([750, 230],ennemi3_image,"ennemi_n°3",1)
 
 platforms = []
 for i in range(-1, 40):
@@ -49,6 +48,17 @@ for i in range(1, 9):
 for i in range(1, 4):
     platforms.append(pform.Plateforme([600 + i * 100, 280],block_image,"block"))
 
+# Relier deux blocs pour la patrouille du troisième ennemi.
+platforms.append(pform.Plateforme([750, 280], block_image, "block"))
+
+# Arène surélevée en fin de niveau.
+for x in range(1450, 1950, 50):
+    platforms.append(pform.Plateforme([x, 480], block_image, "block"))
+
+image_boss = pygame.image.load(os.path.join("Assets", "boss_rock_head.png")).convert_alpha()
+image_boss = image_boss.subsurface(image_boss.get_bounding_rect())
+boss = emi.Boss([1650, 396], pygame.transform.scale(image_boss, (84, 84)))
+ennemis = [ennemi1, ennemi2, ennemi3, boss]
 collision = col.Collision()
 while running:
 
@@ -65,6 +75,7 @@ while running:
 
             if event.key == pygame.K_SPACE:
                 player.jump()
+    bas_precedent = player.rect.bottom
     keys=pygame.key.get_pressed()
     # déplace joueur à droite
     if keys[pygame.K_RIGHT]:
@@ -84,6 +95,10 @@ while running:
 
     collision.move_player(player,platforms)
 
+    for ennemi in ennemis:
+        ennemi.patrouiller(platforms)
+        ennemi.contact_joueur(player, bas_precedent)
+
     camera.update(player)
 
     screen.fill((0, 0, 0))
@@ -93,19 +108,17 @@ while running:
     for platform in platforms:
         screen.blit(platform.image,camera.apply(platform.rect))
 
-    for ennemi in [ennemi1, ennemi2, ennemi3]:
-        ennemi.patrouiller(platforms)
+    for ennemi in ennemis:
         ennemi.draw(screen, camera)
 
     screen.blit(player.image,camera.apply(player.rect))
 
     if collision.show_hitbox:
 
-        for obj in [player, ennemi1, ennemi2, ennemi3] + platforms:
+        for obj in [player] + [e for e in ennemis if e.is_alive] + platforms:
             pygame.draw.rect(screen,(255, 0, 0),camera.apply(obj.rect),2)
 
     pygame.display.flip()
-    pygame.display.update()
 
     clock.tick(30)
 driver=pygame.display.get_driver()
