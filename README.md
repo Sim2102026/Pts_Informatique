@@ -27,8 +27,8 @@ Lorsque l'utilisateur lance le programme main.py, il fait appel au fichier `jeu.
   pip install unittest
 ```
 2. Lancer `python main.py`.
-3. ✅ une fenêtre s'ouvre
-4. ✅ Le jeu doit afficher le menu d'accueil avec 3 options (Jouer, Sauvegardes, quitter).
+3.  Une fenêtre s'ouvre
+4. Le jeu doit afficher le menu d'accueil avec 3 options (Jouer, Sauvegardes, quitter).
 
 **Attendu :** L'utilisateur « le jeu » avec les options « Jouer », « Sauvegardes » et « Quitter ».
 
