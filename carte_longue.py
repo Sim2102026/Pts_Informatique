@@ -48,7 +48,7 @@ def creer_carte():
         grille[ligne][x] = "E"
     for x in [29, 60, 89, 118, 139]:
         grille[11][x] = "H"
-    grille[11][156] = "D"
+    grille[11][156] = "T"  # Porte vers la salle du boss (Haut pour entrer).
     return ["".join(ligne) for ligne in grille]
 
 

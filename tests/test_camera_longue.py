@@ -42,7 +42,7 @@ def test_carte_plus_courte_que_ecran():
 
 def test_joueur_et_ennemis_peuvent_depasser_le_premier_ecran():
     jeu = Jeu()
-    jeu.executer_action("Jouer")
+    jeu.selectionner_sauvegarde(1)
     jeu.joueur.rect.x = 2000
     jeu.joueur.update(jeu.niveau.plateformes)
     assert jeu.joueur.rect.x == 2000
@@ -55,9 +55,10 @@ def test_joueur_et_ennemis_peuvent_depasser_le_premier_ecran():
 
 def test_largeur_arrivee_et_reset_camera():
     jeu = Jeu()
-    jeu.executer_action("Jouer")
+    jeu.selectionner_sauvegarde(1)
     assert jeu.niveau.largeur == 7680
-    assert len(jeu.niveau.arrivee) == 1
+    assert len(jeu.niveau.portes) == 1
+    assert len(jeu.niveau.arrivee) == 0
     jeu.joueur.rect.x = 4000
     jeu.camera.update(jeu.joueur)
     assert jeu.camera.offset_x > 0
@@ -67,7 +68,7 @@ def test_largeur_arrivee_et_reset_camera():
 
 def test_chute_revient_au_depart_avec_camera():
     jeu = Jeu()
-    jeu.executer_action("Jouer")
+    jeu.selectionner_sauvegarde(1)
     jeu.joueur.rect.topleft = (4000, config.HAUTEUR + 50)
     jeu.camera.update(jeu.joueur)
     jeu.mettre_a_jour()
@@ -76,18 +77,19 @@ def test_chute_revient_au_depart_avec_camera():
     assert jeu.camera.offset_x == 0
 
 
-def test_victoire_hors_du_premier_ecran():
+def test_la_porte_ne_fait_pas_gagner_automatiquement():
     jeu = Jeu()
-    jeu.executer_action("Jouer")
-    fin = next(iter(jeu.niveau.arrivee))
-    jeu.joueur.rect.center = fin.rect.center
+    jeu.selectionner_sauvegarde(1)
+    porte = next(iter(jeu.niveau.portes))
+    jeu.joueur.rect.midbottom = porte.rect.midbottom
     jeu.mettre_a_jour()
-    assert jeu.etat == "fin" and jeu.menu.gagne
+    assert jeu.etat == "jeu" and jeu.scene == "niveau_1"
+    assert jeu.camera.offset_x > 0
 
 
 def test_dessin_apres_defilement_garde_les_rects():
     jeu = Jeu()
-    jeu.executer_action("Jouer")
+    jeu.selectionner_sauvegarde(1)
     jeu.joueur.rect.x = 3500
     jeu.camera.update(jeu.joueur)
     rects = [s.rect.copy() for s in jeu.niveau.plateformes]
@@ -97,7 +99,7 @@ def test_dessin_apres_defilement_garde_les_rects():
 
 def test_soin_hors_premier_ecran_et_plein_de_vies():
     jeu = Jeu()
-    jeu.executer_action("Jouer")
+    jeu.selectionner_sauvegarde(1)
     soin = next(iter(jeu.niveau.soins))
     assert soin.rect.x > config.LARGEUR
     jeu.joueur.rect.center = soin.rect.center
@@ -113,7 +115,7 @@ def test_soin_hors_premier_ecran_et_plein_de_vies():
 
 def test_soin_ne_ressuscite_pas_et_reapparait_au_rejeu():
     jeu = Jeu()
-    jeu.executer_action("Jouer")
+    jeu.selectionner_sauvegarde(1)
     assert len(jeu.niveau.soins) == 5
     soin = next(iter(jeu.niveau.soins))
     jeu.joueur.vies = 0

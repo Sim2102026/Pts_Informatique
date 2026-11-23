@@ -58,4 +58,5 @@ def test_la_vraie_carte_est_rectangulaire():
 def test_la_vraie_carte_a_un_depart_et_une_arrivee():
     texte = "".join(CARTE)
     assert texte.count("P") == 1
-    assert texte.count("D") == 1
+    assert texte.count("T") == 1
+    assert texte.count("D") == 0

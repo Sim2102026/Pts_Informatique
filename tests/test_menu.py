@@ -40,7 +40,7 @@ def test_une_autre_touche_ne_choisit_rien():
 def test_menu_accueil_est_un_menu():
     m = MenuAccueil()
     assert isinstance(m, Menu)
-    assert m.options == ["Jouer", "Quitter"]
+    assert m.options == ["Jouer", "Sauvegardes", "Quitter"]
     assert len(m.lignes_infos()) > 0      # redéfinie : affiche les commandes
 
 

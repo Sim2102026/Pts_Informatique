@@ -19,7 +19,7 @@ def jeu():
 @pytest.fixture
 def partie(jeu):
     """Un jeu où on a déjà appuyé sur "Jouer"."""
-    jeu.executer_action("Jouer")
+    jeu.selectionner_sauvegarde(1)
     return jeu
 
 
@@ -54,10 +54,14 @@ def test_le_jeu_commence_sur_le_menu_d_accueil(jeu):
 def test_entree_sur_jouer_lance_la_partie(jeu):
     appuyer(pygame.K_RETURN)
     jeu.gerer_evenements()
+    assert jeu.etat == "slots"
+    appuyer(pygame.K_RETURN)
+    jeu.gerer_evenements()
     assert jeu.etat == "jeu"
 
 
 def test_choisir_quitter_ferme_le_jeu(jeu):
+    appuyer(pygame.K_DOWN)
     appuyer(pygame.K_DOWN)
     appuyer(pygame.K_RETURN)
     jeu.gerer_evenements()
@@ -138,6 +142,11 @@ def test_tomber_dans_un_trou_fait_perdre_une_vie(partie):
 
 # ---------- Fin de partie ----------
 def test_toucher_le_trophee_fait_gagner(partie):
+    partie.entrer_salle_boss()
+    partie.niveau.boss.vies = 0
+    partie.niveau.boss.changer_etat("vaincu")
+    partie.niveau.declenche = True
+    partie.niveau.reveler_trophee()
     trophee = next(iter(partie.niveau.arrivee))
     partie.joueur.rect.center = trophee.rect.center
     partie.mettre_a_jour()
